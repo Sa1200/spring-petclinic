@@ -1,0 +1,25 @@
+java:
+  build:
+    maven: 
+      command: "mvn -Dmaven.test.failure.ignore=true clean package" 
+    gradle:
+      command: "test"
+  unittest:
+    junit:
+      command: "mvn test"
+      surefire: "mvn surefire-report:report-only"
+  codecoverage:
+    jacoco:
+      command: "mvn --version"
+  codequality:
+    sonarqube:
+      url: "https://sonarcloud.io"
+      login: "74b5ee6411083764b620699a731e7f05f5b12b9b"
+      organization: "hexaware"
+  dockerbuild:
+    docker:
+      dockerurl: "https://apurbaa10.jfrog.io/artifactory/default-docker-local/"
+      command: "docker build -t petclinic ."
+      tag: "docker tag petclinic apurbaa10.jfrog.io/default-docker-local/petclinic:V1"
+      push: "docker image push apurbaa10.jfrog.io/default-docker-local/petclinic:V1"
+  
