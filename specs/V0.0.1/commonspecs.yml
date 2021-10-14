@@ -1,9 +1,44 @@
-dist: trusty
-language: java
-jdk: oraclejdk8
-services:
-  - docker
-before_script:
-  - '[ "${TRAVIS_PULL_REQUEST}" != "false" ] || [ "${TRAVIS_BRANCH}" != "main" ] || docker login -u springbuildmaster -p "$DOCKERHUB_PASSWORD"'
-script:
-  - ./mvnw spring-boot:build-image -D spring-boot.build-image.imageName=springio/petclinic && ([ "${TRAVIS_BRANCH}" != "main" ] || docker push springio/petclinic)
+build:
+  type: java
+  tool: maven
+unitTest:
+  isUnittestRequired: false
+  tool: junit
+codeCoverage:
+  isCodecoverageRequired: false
+  tool: jacoco
+codeQuality:
+  isCodeQualityRequired: false
+  tool: sonarqube
+  projectKey: Petclinic
+  projectName: Petclinic
+dockerBuild:
+  isDockerBuildRequired: false
+dockerDeploy:
+  isDockerDeployRequired: true  
+  
+java:
+  build:
+    maven: 
+      command: "mvn -Dmaven.test.failure.ignore=true clean package" 
+    gradle:
+      command: "test"
+  unittest:
+    junit:
+      command: "mvn test"
+      surefire: "mvn surefire-report:report-only"
+  codecoverage:
+    jacoco:
+      command: "mvn --version"
+  codequality:
+    sonarqube:
+      url: "https://sonarcloud.io"
+      login: "74b5ee6411083764b620699a731e7f05f5b12b9b"
+      organization: "hexaware"
+  dockerbuild:
+    docker:
+      dockerurl: "https://apurbaa10.jfrog.io/artifactory/default-docker-local/"
+      command: "docker build -t petclinic ."
+      tag: "docker tag petclinic apurbaa10.jfrog.io/default-docker-local/petclinic:V1"
+      push: "docker image push apurbaa10.jfrog.io/default-docker-local/petclinic:V1"
+  
